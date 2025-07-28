@@ -16,5 +16,15 @@ This project is a simple C++ program that reads commands or data and outputs the
 Open a terminal in the project directory and run:
 
 ```bash
-g++ -std=c++17 -o interpreter main.cpp
+g++ -std=c++17 main.cpp -o interpreter 
 
+```
+
+to then output your generated code onto a file run:
+
+``` bash
+./interpreter > output.txt
+
+```
+
+Enjoy! :)
