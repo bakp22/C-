@@ -1,6 +1,6 @@
 # Simple C++ Interpreter
 
-This project is a simple C++ program that reads commands or data from an input file and outputs the result. It is designed to be compiled and run from the terminal, with input/output handled through file redirection.
+This project is a simple C++ program that reads commands or data and outputs the result. It is designed to be compiled and run from the terminal, with input/output handled through file redirection.
 
 ---
 
