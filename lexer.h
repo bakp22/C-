@@ -16,13 +16,13 @@ enum class TokenType {
     Comma,
     Newline,
     EndOfFile,
-    SColon;
-    FStarter;
-    FType;
-    Return;
-    LBracket;
-    RBracket;
-    DataType;
+    SColon,
+    FStarter,
+    FType,
+    Return,
+    LBracket,
+    RBracket,
+    DataType,
 
 };
 
@@ -42,7 +42,7 @@ struct Token {
     int line;
     int column;
 
-    Token(TokenType t; const string& val, int ln, int col)
+    Token(TokenType t, const string& val, int ln, int col)
         : type(t), value(val), line(ln), column(col) {} //member intializer list for constructor above
 };
 
@@ -53,9 +53,11 @@ bool isSymbol(char c) {
     return symbols.find(c) != std::string::npos;
 }
 
+extern vector<Token> tokens;
+
 /* function that reads the source code and produce a vector/list of tokens */
 vector<Token> tokenize(const string& source){
-    vector<Token> tokens;
+    
 
     int i = 0;
     int line = 1;
@@ -64,7 +66,7 @@ vector<Token> tokenize(const string& source){
     while (i < source.size()){
         // reading whitespace token type 
         if (isspace(source[i])){
-            if (c == '\n'){
+            if (source[i] == '\n'){
                 line++;
                 column = 1;
             } else {
@@ -89,22 +91,22 @@ vector<Token> tokenize(const string& source){
             string ident = source.substr(start, i - start);
 
             if (ident == "fxn"){
-                tokens.push_back({TokenType::FStarter, ""});
+                tokens.push_back({TokenType::FStarter, "", line, column});
             } 
             else if(ident == "->"){
-                tokens.push_back({TokenType::Return, ""});
+                tokens.push_back({TokenType::Return, "", line, column});
             }
             else if(ident == "int"){
-                tokens.push_back({TokenType::DataType, ident});
+                tokens.push_back({TokenType::DataType, ident, line, column});
             } 
             else if(ident == "bool"){
-                tokens.push_back({TokenType::DataType, ident});
+                tokens.push_back({TokenType::DataType, ident, line, column});
             }
             else if(ident == "string"){
-                tokens.push_back({TokenType::DataType, ident});
+                tokens.push_back({TokenType::DataType, ident, line, column});
             }
             else if(ident == "float"){
-                tokens.push_back({TokenType::DataType, ident});
+                tokens.push_back({TokenType::DataType, ident, line, column});
             }
             else{
                 tokens.push_back(Token(TokenType::Identifier,ident,line,column)); 
@@ -125,6 +127,8 @@ vector<Token> tokenize(const string& source){
             continue;
         }
 
+        char c = source[i];
+
         if (isSymbol(c)) {
             // Check for multi-char symbols first
             if (c == '-' && i + 1 < (int)source.size() && source[i + 1] == '>') {
@@ -133,77 +137,94 @@ vector<Token> tokenize(const string& source){
                 column += 2;
                 continue;
             }
-
+            
+            
             //single-character tokens
             switch(source[i]){
-                case ("+"):
-                    string operator(1,c);
-                    tokens.push_back(Token(TokenType::Operator,operator, line, column));
+                case ('+'):{
+                    std::string op(1, c);
+                    tokens.push_back(Token(TokenType::Operator,op, line, column));
                     break;
-                case ("-"):
-                    string operator(1,c);
-                    tokens.push_back(Token(TokenType::Operator,operator, line, column));
+                }
+                case ('-'):{
+                    std::string op(1, c);
+                    tokens.push_back(Token(TokenType::Operator,op, line, column));
                     break;
-                case ("%"):
-                    string operator(1,c);
-                    tokens.push_back(Token(TokenType::Operator,operator, line, column)); 
+                }
+                case ('%'):{
+                    std::string op(1, c);
+                    tokens.push_back(Token(TokenType::Operator,op, line, column)); 
                     break; 
-                case ("("):
-                    string operator(1,c);
+                }
+                case ('('):{
+                    std::string op(1, c);
                     tokens.push_back(Token(TokenType::LParenthesis,"(", line, column));
                     break;
-                case (")"):
-                    string operator(1,c);
+                }
+                case (')'):{
+                    std::string op(1, c);
                     tokens.push_back(Token(TokenType::LParenthesis,")", line, column));
                     break;
-                case ("["):
-                    string operator(1,c);
+                }
+                case ('['):{
+                    std::string op(1, c);
                     tokens.push_back(Token(TokenType::LBracket, "[", line, column));
                     break;
-                case ("]"):
-                    string operator(1,c);
+                }
+                case (']'):{
+                    std::string op(1, c);
                     tokens.push_back(Token(TokenType::RBracket, "]", line, column));
                     break;
-                case ("{"):
-                    string operator(1,c);
+                }
+                case ('{'):{
+                    std::string op(1, c);
                     tokens.push_back(Token(TokenType::LBrace, "{", line, column));
                     break;
-                case ("}"):
-                    string operator(1,c);
+                }
+                case ('}'):{
+                    std::string op(1, c);
                     tokens.push_back(Token(TokenType::RBrace, "}", line, column));
                     break;
-                case (";"):
-                    string operator(1,c);
+                }
+                case (';'):{
+                    std::string op(1, c);
                     tokens.push_back(Token(TokenType::SColon, ";", line, column));
                     break;
-                case (","):
-                    string operator(1,c);
+                }
+                case (','):{
+                    std::string op(1, c);
                     tokens.push_back(Token(TokenType::Comma, ",", line, column));
                     break;
-                case ("="):
-                    string operator(1,c);
+                }
+                case ('='):{
+                    std::string op(1, c);
                     tokens.push_back(Token(TokenType::Assign, "=", line, column)); 
                     break;
-                case ("/"):
-                    string operator(1,c);
-                    tokens.push_back(Token(TokenType::Operator,operator, line, column));
+                }
+                case ('/'):{
+                    std::string op(1, c);
+                    tokens.push_back(Token(TokenType::Operator,op, line, column));
                     break;
+                }
                 default:
-                    printf("ERROR DETECTED: UNKNOWN CHARACTER " + source[i] + "AT LINE " + line);
+                    std::cerr << "ERROR DETECTED: UNKNOWN CHARACTER '" << c
+                    << "' AT LINE " << line << ", COLUMN " << column << std::endl;
+                    i++;
+                    column++;
                     break;
             }
 
             i++;
-            column++
+            column++;
             continue;
         }
         
-        printf("ERROR DETECTED: UNKNOWN CHARACTER " + source[i] + "AT LINE " + line);
+        printf("ERROR DETECTED: UNKNOWN CHARACTER '%c' AT LINE %d, COLUMN %d\n", source[i], line, column);
         i++;
         column++;
         
     }
-    
+
     tokens.push_back(Token(TokenType::EndOfFile, "", line, column));
     return tokens;
 }
